@@ -6,7 +6,7 @@ use hyper::client::Client;
 use hyper::status::StatusCode;
 use std::{env, mem, process};
 use std::error::Error;
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{Read, Write};
 use temporary::Directory;
 
@@ -35,7 +35,7 @@ macro_rules! ok(
 
 fn main() {
     let arguments = env::args().collect::<Vec<_>>();
-    if arguments.len() != 2 {
+    if arguments.len() < 2 {
         abort("expected a word");
     }
     let word = arguments[1].trim().to_lowercase();
@@ -62,6 +62,9 @@ fn main() {
     ok!(file.write_all(&buffer));
     mem::drop(file);
     ok!(play::play(&path));
+    if arguments.len() > 2 {
+        ok!(fs::copy(&path, &filename));
+    }
 }
 
 fn abort(message: &str) -> ! {
