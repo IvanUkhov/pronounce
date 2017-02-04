@@ -1,6 +1,10 @@
+extern crate hyper;
 extern crate play;
 
+use hyper::client::Client;
+use hyper::status::StatusCode;
 use std::{env, process};
+use std::error::Error;
 
 const ROOT_URL: &'static str = "http://www.oxfordlearnersdictionaries.com";
 
@@ -23,31 +27,33 @@ fn main() {
     if arguments.len() != 2 {
         abort("expected a word");
     }
-    let url = match locate(&arguments[1], 1, English::American, Format::MP3) {
-        Ok(url) => url,
-        Err(error) => abort(error),
+    let word = arguments[1].trim().to_lowercase();
+    if word.is_empty() {
+        abort("expected a nonempty word");
+    }
+    for letter in word.chars() {
+        match letter {
+            'a'...'z' => {},
+            _ => abort("expected the word to contain only letters"),
+        }
+    }
+    let url = locate(&word, 1, English::American, Format::MP3);
+    let client = Client::new();
+    let response = match client.get(&url).send() {
+        Ok(response) => response,
+        Err(error) => abort(error.description()),
     };
-    println!("{}", url);
+    if response.status != StatusCode::Ok {
+        abort("failed to find the word");
+    }
 }
 
-fn abort(message: &'static str) -> ! {
+fn abort(message: &str) -> ! {
     println!("Error: {}.", message);
     process::exit(1);
 }
 
-fn locate(word: &str, variant: usize, english: English, format: Format)
-          -> Result<String, &'static str> {
-
-    let mut word = word.trim().to_lowercase();
-    if word.is_empty() {
-        return Err("expected a nonempty word")
-    }
-    for c in word.chars() {
-        match c {
-            'a'...'z' => {},
-            _ => return Err("expected the word to contain only letters"),
-        }
-    }
+fn locate(word: &str, variant: usize, english: English, format: Format) -> String {
     let (slag1, slag2) = match english {
         English::American => ("us", "us"),
         English::British => ("uk", "gb"),
@@ -56,6 +62,7 @@ fn locate(word: &str, variant: usize, english: English, format: Format)
         Format::OGG => "ogg",
         Format::MP3 => "mp3",
     };
+    let mut word = word.to_string();
     word.push_str("__");
     word.push_str(slag2);
     let mut url = ROOT_URL.to_string();
@@ -73,5 +80,5 @@ fn locate(word: &str, variant: usize, english: English, format: Format)
     url.push_str(&variant.to_string());
     url.push_str(".");
     url.push_str(&extension);
-    Ok(url)
+    url
 }
