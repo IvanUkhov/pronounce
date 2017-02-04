@@ -3,6 +3,12 @@
 A tool for pronouncing English words using the database of [Oxford Learner’s
 Dictionaries][oxford].
 
+## Usage
+
+```
+cargo run cat
+```
+
 ## Contribution
 
 Your contribution is highly appreciated. Do not hesitate to open an issue or a
