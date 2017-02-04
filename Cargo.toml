@@ -7,3 +7,4 @@ authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
 [dependencies]
 hyper = "*"
 play = "*"
+temporary = "*"

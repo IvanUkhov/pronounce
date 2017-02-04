@@ -1,10 +1,14 @@
 extern crate hyper;
 extern crate play;
+extern crate temporary;
 
 use hyper::client::Client;
 use hyper::status::StatusCode;
-use std::{env, process};
+use std::{env, mem, process};
 use std::error::Error;
+use std::fs::File;
+use std::io::{Read, Write};
+use temporary::Directory;
 
 const ROOT_URL: &'static str = "http://www.oxfordlearnersdictionaries.com";
 
@@ -22,6 +26,13 @@ enum Format {
     MP3,
 }
 
+macro_rules! ok(
+    ($result:expr) => (match $result {
+        Ok(result) => result,
+        Err(error) => abort(error.description()),
+    });
+);
+
 fn main() {
     let arguments = env::args().collect::<Vec<_>>();
     if arguments.len() != 2 {
@@ -37,15 +48,20 @@ fn main() {
             _ => abort("expected the word to contain only letters"),
         }
     }
-    let url = locate(&word, 1, English::American, Format::MP3);
+    let (filename, url) = locate(&word, 1, English::American, Format::MP3);
     let client = Client::new();
-    let response = match client.get(&url).send() {
-        Ok(response) => response,
-        Err(error) => abort(error.description()),
-    };
+    let mut response = ok!(client.get(&url).send());
     if response.status != StatusCode::Ok {
         abort("failed to find the word");
     }
+    let mut buffer = Vec::new();
+    ok!(response.read_to_end(&mut buffer));
+    let directory = ok!(Directory::new("pronounce"));
+    let path = directory.join(&filename);
+    let mut file = ok!(File::create(&path));
+    ok!(file.write_all(&buffer));
+    mem::drop(file);
+    ok!(play::play(&path));
 }
 
 fn abort(message: &str) -> ! {
@@ -53,7 +69,7 @@ fn abort(message: &str) -> ! {
     process::exit(1);
 }
 
-fn locate(word: &str, variant: usize, english: English, format: Format) -> String {
+fn locate(word: &str, variant: usize, english: English, format: Format) -> (String, String) {
     let (slag1, slag2) = match english {
         English::American => ("us", "us"),
         English::British => ("uk", "gb"),
@@ -62,23 +78,23 @@ fn locate(word: &str, variant: usize, english: English, format: Format) -> Strin
         Format::OGG => "ogg",
         Format::MP3 => "mp3",
     };
-    let mut word = word.to_string();
-    word.push_str("__");
-    word.push_str(slag2);
+    let mut filename = word.to_string();
+    filename.push_str("__");
+    filename.push_str(slag2);
+    filename.push_str("_");
+    filename.push_str(&variant.to_string());
+    filename.push_str(".");
+    filename.push_str(&extension);
     let mut url = ROOT_URL.to_string();
     url.push_str("/media/english/");
     url.push_str(slag1);
     url.push_str("_pron/");
-    url.push_str(&word[..1]);
+    url.push_str(&filename[..1]);
     url.push_str("/");
-    url.push_str(&word[..3]);
+    url.push_str(&filename[..3]);
     url.push_str("/");
-    url.push_str(&word[..5]);
+    url.push_str(&filename[..5]);
     url.push_str("/");
-    url.push_str(&word);
-    url.push_str("_");
-    url.push_str(&variant.to_string());
-    url.push_str(".");
-    url.push_str(&extension);
-    url
+    url.push_str(&filename);
+    (filename, url)
 }
