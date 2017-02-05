@@ -14,7 +14,7 @@ cargo run cat
 For convenience of invocation, add an alias to your `.bash_profile`:
 
 ```bash
-echo "alias pronounce='cargo run --quiet --manifest-path="`pwd`/Cargo.toml"'" >> ~/.bash_profile
+echo "alias pronounce='cargo run --quiet --manifest-path="${PWD}/Cargo.toml"'" >> ~/.bash_profile
 ```
 
 On macOS, one can also assign a shortcut to the tool so that, regardless of the
