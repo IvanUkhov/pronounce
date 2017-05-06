@@ -13,7 +13,7 @@ use temporary::Directory;
 const ROOT_URL: &'static str = "http://www.oxfordlearnersdictionaries.com";
 
 #[derive(Clone, Copy)]
-enum English {
+enum Accent {
     American,
     #[allow(dead_code)]
     British,
@@ -48,7 +48,7 @@ fn main() {
             _ => abort("expected the word to contain only letters"),
         }
     }
-    let (filename, url) = locate(&word, 1, English::American, Format::MP3);
+    let (filename, url) = locate(&word, 1, Accent::American, Format::MP3);
     let client = Client::new();
     let mut response = ok!(client.get(&url).send());
     if response.status != StatusCode::Ok {
@@ -72,10 +72,10 @@ fn abort(message: &str) -> ! {
     process::exit(1);
 }
 
-fn locate(word: &str, variant: usize, english: English, format: Format) -> (String, String) {
-    let (slag1, slag2) = match english {
-        English::American => ("us", "us"),
-        English::British => ("uk", "gb"),
+fn locate(word: &str, variant: usize, accent: Accent, format: Format) -> (String, String) {
+    let (slag1, slag2) = match accent {
+        Accent::American => ("us", "us"),
+        Accent::British => ("uk", "gb"),
     };
     let extension = match format {
         Format::OGG => "ogg",
