@@ -49,7 +49,7 @@ fn main() {
     }
     for letter in word.chars() {
         match letter {
-            'a'...'z' => {},
+            'a'...'z' => {}
             _ => abort("expected the word to contain only letters"),
         }
     }
@@ -110,9 +110,7 @@ fn read(url: &str, buffer: &mut Vec<u8>) {
             abort("failed to find the word");
         }
         response.body().for_each(|chunk| {
-            buffer.write_all(&chunk)
-                  .map(|_| ())
-                  .map_err(From::from)
+            buffer.write_all(&chunk).map(|_| ()).map_err(From::from)
         })
     });
     ok!(core.run(work));
