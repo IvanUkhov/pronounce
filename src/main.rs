@@ -1,14 +1,19 @@
+extern crate futures;
 extern crate hyper;
 extern crate play;
 extern crate temporary;
+extern crate tokio_core;
 
+use futures::future::Future;
+use futures::stream::Stream;
+use hyper::StatusCode;
 use hyper::client::Client;
-use hyper::status::StatusCode;
-use std::{env, mem, process};
 use std::error::Error;
 use std::fs::{self, File};
-use std::io::{Read, Write};
+use std::io::Write;
+use std::{env, mem, process};
 use temporary::Directory;
+use tokio_core::reactor::Core;
 
 const ROOT_URL: &'static str = "http://www.oxfordlearnersdictionaries.com";
 
@@ -49,13 +54,8 @@ fn main() {
         }
     }
     let (filename, url) = locate(&word, 1, Accent::American, Format::MP3);
-    let client = Client::new();
-    let mut response = ok!(client.get(&url).send());
-    if response.status != StatusCode::Ok {
-        abort("failed to find the word");
-    }
     let mut buffer = Vec::new();
-    ok!(response.read_to_end(&mut buffer));
+    read(&url, &mut buffer);
     let directory = ok!(Directory::new("pronounce"));
     let path = directory.join(&filename);
     let mut file = ok!(File::create(&path));
@@ -100,4 +100,20 @@ fn locate(word: &str, variant: usize, accent: Accent, format: Format) -> (String
     url.push_str("/");
     url.push_str(&filename);
     (filename, url)
+}
+
+fn read(url: &str, buffer: &mut Vec<u8>) {
+    let mut core = ok!(Core::new());
+    let client = Client::new(&core.handle());
+    let work = client.get(ok!(url.parse())).and_then(|response| {
+        if response.status() != StatusCode::Ok {
+            abort("failed to find the word");
+        }
+        response.body().for_each(|chunk| {
+            buffer.write_all(&chunk)
+                  .map(|_| ())
+                  .map_err(From::from)
+        })
+    });
+    ok!(core.run(work));
 }
