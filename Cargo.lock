@@ -4,7 +4,7 @@ version = "0.0.1"
 dependencies = [
  "futures 0.1.16 (registry+https://github.com/rust-lang/crates.io-index)",
  "hyper 0.11.6 (registry+https://github.com/rust-lang/crates.io-index)",
- "play 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "play 0.5.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "temporary 0.6.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "tokio-core 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -212,7 +212,7 @@ dependencies = [
 
 [[package]]
 name = "mpg123-sys"
-version = "0.5.0"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "bitflags 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -242,11 +242,11 @@ dependencies = [
 
 [[package]]
 name = "out123-sys"
-version = "0.4.1"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "libc 0.2.32 (registry+https://github.com/rust-lang/crates.io-index)",
- "mpg123-sys 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "mpg123-sys 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "pkg-config 0.3.9 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -262,12 +262,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "play"
-version = "0.5.2"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "libc 0.2.32 (registry+https://github.com/rust-lang/crates.io-index)",
- "mpg123-sys 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "out123-sys 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "mpg123-sys 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "out123-sys 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -462,13 +462,13 @@ dependencies = [
 "checksum mime 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)" = "e2e00e17be181010a91dbfefb01660b17311059dc8c7f48b9017677721e732bd"
 "checksum mio 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)" = "dbd91d3bfbceb13897065e97b2ef177a09a438cb33612b2d371bf568819a9313"
 "checksum miow 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "8c1f2f3b1cf331de6896aabf6e9d55dca90356cc9960cca7eaaf408a355ae919"
-"checksum mpg123-sys 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "097737fd5fc8004ac826cc31fe382dc15791f54fdaad1dfd02a1e3b6eb511b27"
+"checksum mpg123-sys 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "a75c26239d85c1423091c109fcdabbcfaac868576dc018b0e959137217907610"
 "checksum net2 0.2.31 (registry+https://github.com/rust-lang/crates.io-index)" = "3a80f842784ef6c9a958b68b7516bc7e35883c614004dd94959a4dca1b716c09"
 "checksum num_cpus 1.7.0 (registry+https://github.com/rust-lang/crates.io-index)" = "514f0d73e64be53ff320680ca671b64fe3fb91da01e1ae2ddc99eb51d453b20d"
-"checksum out123-sys 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)" = "756f62cd6cbc7192349ff6d623486dd56c6c466494066308a4dfe33f7f3f3a65"
+"checksum out123-sys 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "5da977be7c4b44e2ad26be779aafc1761a89bd2ee6e363770bb71eb67a00d2e5"
 "checksum percent-encoding 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "de154f638187706bde41d9b4738748933d64e6b37bdbffc0b47a97d16a6ae356"
 "checksum pkg-config 0.3.9 (registry+https://github.com/rust-lang/crates.io-index)" = "3a8b4c6b8165cd1a1cd4b9b120978131389f64bdaf456435caa41e630edba903"
-"checksum play 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)" = "9e993f374c3c76b61a670b88c79ad696b3472857095f30eba0dd0e0d7034501c"
+"checksum play 0.5.3 (registry+https://github.com/rust-lang/crates.io-index)" = "c570085654588139e9ea2f452fe7dcb78d576da4f1c04d58b98b32fc42744ff0"
 "checksum rand 0.3.17 (registry+https://github.com/rust-lang/crates.io-index)" = "61efcbcd9fa8d8fbb07c84e34a8af18a1ff177b449689ad38a6e9457ecc7b2ae"
 "checksum random 0.12.2 (registry+https://github.com/rust-lang/crates.io-index)" = "97d13a3485349981c90c79112a11222c3e6e75de1d52b87a7525b3bf5361420f"
 "checksum redox_syscall 0.1.31 (registry+https://github.com/rust-lang/crates.io-index)" = "8dde11f18c108289bef24469638a04dce49da56084f2d50618b226e47eb04509"
