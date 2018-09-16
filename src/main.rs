@@ -1,21 +1,14 @@
-extern crate futures;
-extern crate hyper;
 extern crate play;
+extern crate reqwest;
 extern crate temporary;
-extern crate tokio_core;
 
-use futures::future::Future;
-use futures::stream::Stream;
-use hyper::StatusCode;
-use hyper::client::Client;
 use std::error::Error;
 use std::fs::{self, File};
 use std::io::Write;
 use std::{env, mem, process};
 use temporary::Directory;
-use tokio_core::reactor::Core;
 
-const ROOT_URL: &'static str = "http://www.oxfordlearnersdictionaries.com";
+const ROOT_URL: &'static str = "https://www.oxfordlearnersdictionaries.com";
 
 #[derive(Clone, Copy)]
 enum Accent {
@@ -103,15 +96,10 @@ fn locate(word: &str, variant: usize, accent: Accent, format: Format) -> (String
 }
 
 fn read(url: &str, buffer: &mut Vec<u8>) {
-    let mut core = ok!(Core::new());
-    let client = Client::new(&core.handle());
-    let work = client.get(ok!(url.parse())).and_then(|response| {
-        if response.status() != StatusCode::Ok {
-            abort("failed to find the word");
-        }
-        response.body().for_each(|chunk| {
-            buffer.write_all(&chunk).map(|_| ()).map_err(From::from)
-        })
-    });
-    ok!(core.run(work));
+    use std::io::Read;
+    let mut response = ok!(reqwest::get(url));
+    if !response.status().is_success() {
+        abort("failed to find the word");
+    }
+    ok!(response.read_to_end(buffer));
 }

@@ -5,8 +5,6 @@ license = "Apache-2.0/MIT"
 authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
 
 [dependencies]
-futures = "*"
-hyper = "*"
 play = "*"
+reqwest = "*"
 temporary = "*"
-tokio-core = "*"
